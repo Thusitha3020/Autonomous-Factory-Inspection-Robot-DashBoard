@@ -32,6 +32,44 @@
       </header>
 
       <main class="content" id="view-dashboard">
+        <!-- System Health Overview -->
+        <section class="system-health">
+          <div class="card" style="background:linear-gradient(135deg,rgba(0,184,255,0.1),rgba(155,108,255,0.1));border:1px solid rgba(0,184,255,0.2)">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px">
+              <div>
+                <div class="card-title">System Status</div>
+                <div style="color:var(--muted-text);font-size:13px;margin-top:4px">Overall operational health</div>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px">
+                <span class="status-dot green"></span>
+                <span id="sysHealth" style="font-weight:700;color:var(--primary)">98%</span>
+              </div>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px">
+              <div style="padding:12px;border-radius:8px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.05)">
+                <div class="label" style="font-size:11px;margin-bottom:8px">Sensors</div>
+                <div style="font-weight:700;font-size:18px" id="healthSensors">5/5</div>
+                <div style="font-size:11px;color:var(--success);margin-top:4px">Operational</div>
+              </div>
+              <div style="padding:12px;border-radius:8px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.05)">
+                <div class="label" style="font-size:11px;margin-bottom:8px">Memory</div>
+                <div style="font-weight:700;font-size:18px" id="healthMemory">24%</div>
+                <div style="font-size:11px;color:var(--success);margin-top:4px">Healthy</div>
+              </div>
+              <div style="padding:12px;border-radius:8px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.05)">
+                <div class="label" style="font-size:11px;margin-bottom:8px">CPU Temp</div>
+                <div style="font-weight:700;font-size:18px" id="healthCPU">42°C</div>
+                <div style="font-size:11px;color:var(--success);margin-top:4px">Normal</div>
+              </div>
+              <div style="padding:12px;border-radius:8px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.05)">
+                <div class="label" style="font-size:11px;margin-bottom:8px">Uptime</div>
+                <div style="font-weight:700;font-size:18px" id="healthUptime">14h 22m</div>
+                <div style="font-size:11px;color:var(--success);margin-top:4px">Running</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
         <section class="top-row">
           <div class="sensor-card" id="card-temp">
             <div class="card-row">
@@ -62,6 +100,12 @@
             <div class="card-value"><div class="value">--</div><div class="unit">%</div></div>
             <div class="card-footer"><span class="status-dot green"></span><span class="label">Battery</span></div>
           </div>
+
+          <div class="sensor-card" id="card-signal">
+            <div class="card-row"><div class="card-icon">📶</div><div class="card-trend">▲ 0.1%</div></div>
+            <div class="card-value"><div class="signal-bars" id="signalBars"></div><div class="unit">dBm</div></div>
+            <div class="card-footer"><span class="status-dot green"></span><span class="label">Signal</span></div>
+          </div>
         </section>
 
         <section class="middle-row">
@@ -70,8 +114,36 @@
             <canvas id="liveChart"></canvas>
           </div>
 
+          <div class="card" style="display:flex;flex-direction:column;gap:12px">
+            <div class="card-title">Quick Actions</div>
+            <button class="quick-action" id="dashGoControl" style="background:linear-gradient(135deg,rgba(0,184,255,0.2),rgba(102,208,255,0.1));border:1px solid rgba(0,184,255,0.3)">
+              <div style="font-size:24px">🎮</div>
+              <div style="display:flex;flex-direction:column;gap:4px;text-align:left;flex:1">
+                <div style="font-weight:600">Robot Control</div>
+                <div style="font-size:12px;color:var(--muted-text)">Direction & modes</div>
+              </div>
+              <div style="color:var(--muted-text)">→</div>
+            </button>
+            <button class="quick-action" id="dashGoCamera" style="background:linear-gradient(135deg,rgba(155,108,255,0.2),rgba(185,159,255,0.1));border:1px solid rgba(155,108,255,0.3)">
+              <div style="font-size:24px">🎥</div>
+              <div style="display:flex;flex-direction:column;gap:4px;text-align:left;flex:1">
+                <div style="font-weight:600">Camera View</div>
+                <div style="font-size:12px;color:var(--muted-text)">Recording & capture</div>
+              </div>
+              <div style="color:var(--muted-text)">→</div>
+            </button>
+            <button class="quick-action" id="dashGoSensors" style="background:linear-gradient(135deg,rgba(40,208,123,0.2),rgba(95,223,159,0.1));border:1px solid rgba(40,208,123,0.3)">
+              <div style="font-size:24px">📈</div>
+              <div style="display:flex;flex-direction:column;gap:4px;text-align:left;flex:1">
+                <div style="font-weight:600">Sensor Monitoring</div>
+                <div style="font-size:12px;color:var(--muted-text)">Thresholds & stats</div>
+              </div>
+              <div style="color:var(--muted-text)">→</div>
+            </button>
+          </div>
+
           <div class="card camera-panel">
-            <div class="card-title">Live Camera Feed / Robot View</div>
+            <div class="card-title">Robot Visualization & Position</div>
             <div class="robot-stage">
               <div class="robot-scene" id="robotScene">
                 <div id="robotPath" class="robot-path" aria-hidden="true"></div>
@@ -95,7 +167,20 @@
                 <div id="robotPosLabel" style="color:var(--muted-text)">--</div>
               </div>
             </div>
-            <div class="camera-controls"><button class="small">Snapshot</button><button class="small">Fullscreen</button></div>
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,0.05)">
+              <div style="display:flex;flex-direction:column;gap:4px">
+                <div class="label" style="font-size:11px;color:var(--muted-text)">Mode</div>
+                <div style="font-weight:600" id="dashRobotMode">Manual</div>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:4px">
+                <div class="label" style="font-size:11px;color:var(--muted-text)">State</div>
+                <div style="font-weight:600" id="dashRobotState">Idle</div>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:4px">
+                <div class="label" style="font-size:11px;color:var(--muted-text)">Signal</div>
+                <div style="font-weight:600;color:var(--primary)" id="dashRobotSignal">--</div>
+              </div>
+            </div>
           </div>
         </section>
 
@@ -140,7 +225,7 @@
 
         <section class="bottom-row">
           <div class="card control-panel">
-            <div class="card-title">Robot Control</div>
+            <div class="card-title">Quick Robot Control</div>
             <div class="controls-grid">
               <div class="dpad">
                 <button class="dir" data-cmd="forward">▲</button>
@@ -159,6 +244,28 @@
             </div>
           </div>
 
+          <div class="card" style="display:flex;flex-direction:column;gap:12px">
+            <div class="card-title">System Diagnostics</div>
+            <div style="display:flex;flex-direction:column;gap:8px;font-size:13px">
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:8px;border-radius:6px;background:rgba(255,255,255,0.02)">
+                <span>Network Status</span>
+                <span style="font-weight:600;color:var(--success)" id="diagNetwork">Connected</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:8px;border-radius:6px;background:rgba(255,255,255,0.02)">
+                <span>Connection Latency</span>
+                <span style="font-weight:600;color:var(--primary)" id="diagLatency">35ms</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:8px;border-radius:6px;background:rgba(255,255,255,0.02)">
+                <span>Firmware Version</span>
+                <span style="font-weight:600" id="diagFirmware">v2.4.1</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:8px;border-radius:6px;background:rgba(255,255,255,0.02)">
+                <span>Last Sync</span>
+                <span style="font-weight:600;color:var(--primary)" id="diagSync">Now</span>
+              </div>
+            </div>
+          </div>
+
           <div class="card alerts-panel">
             <div class="card-title">Alerts & Notifications</div>
             <ul id="alertsList" class="alerts-list">
@@ -172,73 +279,364 @@
       <!-- Other views populated with relevant information -->
       <main class="content view" id="view-live" hidden>
         <h2>Live Sensors</h2>
-        <div class="live-grid" style="display:grid;grid-template-columns:repeat(12,1fr);gap:24px;margin-top:16px">
-          <div class="card" style="grid-column:span 6">
-            <div class="card-title">Expanded Sensor Overview</div>
-            <div style="display:flex;gap:12px;margin-top:12px">
-              <div style="flex:1;padding:12px;border-radius:10px;background:rgba(255,255,255,0.01)">
-                <div class="label">Temperature</div>
-                <div style="font-size:40px;font-weight:700;margin-top:8px" id="live-temp">-- °C</div>
-                <div style="color:var(--muted-text);margin-top:6px">Sensor: Ambient probe • Status: <span class="status-dot green"></span></div>
-              </div>
-              <div style="flex:1;padding:12px;border-radius:10px;background:rgba(255,255,255,0.01)">
-                <div class="label">Proximity</div>
-                <div style="font-size:40px;font-weight:700;margin-top:8px" id="live-dist">-- cm</div>
-                <div style="color:var(--muted-text);margin-top:6px">Sensor: LIDAR • Range: 0–500cm</div>
+        <div style="display:grid;grid-template-columns:2fr 1fr;gap:24px;margin-top:16px">
+          <!-- Main Sensor Monitoring -->
+          <div>
+            <!-- Sensor Overview Cards -->
+            <div class="card">
+              <div class="card-title">Sensor Readings</div>
+              <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:16px">
+                <!-- Temperature Sensor -->
+                <div style="padding:16px;border-radius:10px;background:linear-gradient(135deg,rgba(255,159,67,0.1),rgba(255,159,67,0.05));border:1px solid rgba(255,159,67,0.2)">
+                  <div style="display:flex;justify-content:space-between;align-items:center">
+                    <div>
+                      <div class="label">Temperature</div>
+                      <div style="font-size:32px;font-weight:700;margin-top:8px" id="live-temp">-- °C</div>
+                    </div>
+                    <div style="font-size:32px">🌡️</div>
+                  </div>
+                  <div style="margin-top:12px;display:flex;gap:8px;align-items:center">
+                    <div style="flex:1;height:4px;border-radius:2px;background:rgba(255,159,67,0.2);overflow:hidden">
+                      <div id="tempBar" style="height:100%;width:50%;background:linear-gradient(90deg,#FF9F43,#FFB366);transition:width 300ms"></div>
+                    </div>
+                    <span style="font-size:11px;color:var(--muted-text)">-40°C to 120°C</span>
+                  </div>
+                  <div style="margin-top:8px;font-size:12px;color:var(--muted-text)">Status: <span class="status-dot green"></span> Normal</div>
+                </div>
+
+                <!-- Proximity Sensor -->
+                <div style="padding:16px;border-radius:10px;background:linear-gradient(135deg,rgba(0,184,255,0.1),rgba(0,184,255,0.05));border:1px solid rgba(0,184,255,0.2)">
+                  <div style="display:flex;justify-content:space-between;align-items:center">
+                    <div>
+                      <div class="label">Proximity</div>
+                      <div style="font-size:32px;font-weight:700;margin-top:8px" id="live-dist">-- cm</div>
+                    </div>
+                    <div style="font-size:32px">📏</div>
+                  </div>
+                  <div style="margin-top:12px;display:flex;gap:8px;align-items:center">
+                    <div style="flex:1;height:4px;border-radius:2px;background:rgba(0,184,255,0.2);overflow:hidden">
+                      <div id="distBar" style="height:100%;width:25%;background:linear-gradient(90deg,#00B8FF,#66D0FF);transition:width 300ms"></div>
+                    </div>
+                    <span style="font-size:11px;color:var(--muted-text)">0 to 500cm</span>
+                  </div>
+                  <div style="margin-top:8px;font-size:12px;color:var(--muted-text)">Status: <span class="status-dot green"></span> Active</div>
+                </div>
+
+                <!-- Gas Sensor -->
+                <div style="padding:16px;border-radius:10px;background:linear-gradient(135deg,rgba(155,108,255,0.1),rgba(155,108,255,0.05));border:1px solid rgba(155,108,255,0.2)">
+                  <div style="display:flex;justify-content:space-between;align-items:center">
+                    <div>
+                      <div class="label">Gas Level</div>
+                      <div style="font-size:32px;font-weight:700;margin-top:8px" id="live-gas">-- PPM</div>
+                    </div>
+                    <div style="font-size:32px">💨</div>
+                  </div>
+                  <div style="margin-top:12px;display:flex;gap:8px;align-items:center">
+                    <div style="flex:1;height:4px;border-radius:2px;background:rgba(155,108,255,0.2);overflow:hidden">
+                      <div id="gasBar" style="height:100%;width:10%;background:linear-gradient(90deg,#9B6CFF,#B89FFF);transition:width 300ms"></div>
+                    </div>
+                    <span style="font-size:11px;color:var(--muted-text)">0 to 100 PPM</span>
+                  </div>
+                  <div style="margin-top:8px;font-size:12px;color:var(--muted-text)">Status: <span class="status-dot green"></span> Safe</div>
+                </div>
+
+                <!-- Battery Sensor -->
+                <div style="padding:16px;border-radius:10px;background:linear-gradient(135deg,rgba(40,208,123,0.1),rgba(40,208,123,0.05));border:1px solid rgba(40,208,123,0.2)">
+                  <div style="display:flex;justify-content:space-between;align-items:center">
+                    <div>
+                      <div class="label">Battery</div>
+                      <div style="font-size:32px;font-weight:700;margin-top:8px" id="live-batt">-- %</div>
+                    </div>
+                    <div style="font-size:32px">🔋</div>
+                  </div>
+                  <div style="margin-top:12px;display:flex;gap:8px;align-items:center">
+                    <div style="flex:1;height:4px;border-radius:2px;background:rgba(40,208,123,0.2);overflow:hidden">
+                      <div id="battBar" style="height:100%;width:88%;background:linear-gradient(90deg,#28D07B,#5FDF9F);transition:width 300ms"></div>
+                    </div>
+                    <span style="font-size:11px;color:var(--muted-text)">0 to 100%</span>
+                  </div>
+                  <div style="margin-top:8px;font-size:12px;color:var(--muted-text)">Health: <span class="status-dot green"></span> Good</div>
+                </div>
               </div>
             </div>
-            <div style="display:flex;gap:12px;margin-top:12px">
-              <div style="flex:1;padding:12px;border-radius:10px;background:rgba(255,255,255,0.01)">
-                <div class="label">Gas Level</div>
-                <div style="font-size:40px;font-weight:700;margin-top:8px" id="live-gas">-- PPM</div>
-                <div style="color:var(--muted-text);margin-top:6px">Sensor: MQ-series • Thresholds configurable</div>
+
+            <!-- Live Trends Chart -->
+            <div class="card" style="margin-top:24px">
+              <div class="card-title">Live Sensor Trends</div>
+              <div style="display:flex;gap:8px;margin-top:12px;margin-bottom:12px">
+                <button class="trend-filter active" data-sensor="all">All</button>
+                <button class="trend-filter" data-sensor="temp">Temperature</button>
+                <button class="trend-filter" data-sensor="gas">Gas</button>
+                <button class="trend-filter" data-sensor="dist">Distance</button>
               </div>
-              <div style="flex:1;padding:12px;border-radius:10px;background:rgba(255,255,255,0.01)">
-                <div class="label">Battery</div>
-                <div style="font-size:40px;font-weight:700;margin-top:8px" id="live-batt">-- %</div>
-                <div style="color:var(--muted-text);margin-top:6px">Health: Nominal • Cycles: 412</div>
+              <canvas id="liveChart2" style="height:280px;margin-top:8px"></canvas>
+            </div>
+
+            <!-- Sensor Statistics -->
+            <div class="card" style="margin-top:24px">
+              <div class="card-title">Sensor Statistics</div>
+              <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:16px;font-size:13px">
+                <div style="padding:12px;border-radius:8px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05)">
+                  <div class="label" style="font-size:11px">Avg Temperature</div>
+                  <div style="font-weight:700;margin-top:6px" id="stat-temp-avg">--</div>
+                </div>
+                <div style="padding:12px;border-radius:8px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05)">
+                  <div class="label" style="font-size:11px">Min Distance</div>
+                  <div style="font-weight:700;margin-top:6px" id="stat-dist-min">--</div>
+                </div>
+                <div style="padding:12px;border-radius:8px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05)">
+                  <div class="label" style="font-size:11px">Max Gas Level</div>
+                  <div style="font-weight:700;margin-top:6px" id="stat-gas-max">--</div>
+                </div>
+                <div style="padding:12px;border-radius:8px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05)">
+                  <div class="label" style="font-size:11px">Data Points</div>
+                  <div style="font-weight:700;margin-top:6px" id="stat-data-points">--</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Recent Readings Table -->
+            <div class="card" style="margin-top:24px">
+              <div class="card-title">Recent Readings</div>
+              <div style="max-height:300px;overflow-y:auto;margin-top:12px">
+                <table style="width:100%;border-collapse:collapse;font-size:13px">
+                  <thead style="color:var(--muted-text);position:sticky;top:0;background:var(--surface)">
+                    <tr>
+                      <th style="text-align:left;padding:8px;border-bottom:1px solid rgba(255,255,255,0.05)">Time</th>
+                      <th style="text-align:left;padding:8px;border-bottom:1px solid rgba(255,255,255,0.05)">Temp</th>
+                      <th style="text-align:left;padding:8px;border-bottom:1px solid rgba(255,255,255,0.05)">Gas</th>
+                      <th style="text-align:left;padding:8px;border-bottom:1px solid rgba(255,255,255,0.05)">Distance</th>
+                    </tr>
+                  </thead>
+                  <tbody id="recentReadings" style="color:var(--muted-text)"></tbody>
+                </table>
               </div>
             </div>
           </div>
 
-          <div class="card" style="grid-column:span 6">
-            <div class="card-title">Live Trends (last samples)</div>
-            <canvas id="liveChart2" style="height:220px;margin-top:8px"></canvas>
+          <!-- Alert & Threshold Panel -->
+          <div style="display:flex;flex-direction:column;gap:16px">
+            <!-- Sensor Health -->
+            <div class="card">
+              <div class="card-title">Sensor Health</div>
+              <div style="margin-top:12px;display:flex;flex-direction:column;gap:10px">
+                <div style="display:flex;justify-content:space-between;align-items:center">
+                  <span class="label" style="font-size:13px">Temperature Probe</span>
+                  <span style="display:inline-block;width:24px;height:24px;border-radius:50%;background:var(--success);display:flex;align-items:center;justify-content:center;font-size:12px">✓</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:center">
+                  <span class="label" style="font-size:13px">LIDAR Sensor</span>
+                  <span style="display:inline-block;width:24px;height:24px;border-radius:50%;background:var(--success);display:flex;align-items:center;justify-content:center;font-size:12px">✓</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:center">
+                  <span class="label" style="font-size:13px">Gas Detector</span>
+                  <span style="display:inline-block;width:24px;height:24px;border-radius:50%;background:var(--success);display:flex;align-items:center;justify-content:center;font-size:12px">✓</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:center">
+                  <span class="label" style="font-size:13px">Battery Monitor</span>
+                  <span style="display:inline-block;width:24px;height:24px;border-radius:50%;background:var(--success);display:flex;align-items:center;justify-content:center;font-size:12px">✓</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Alert Thresholds -->
+            <div class="card">
+              <div class="card-title">Alert Thresholds</div>
+              <div style="margin-top:12px;display:flex;flex-direction:column;gap:12px;font-size:13px">
+                <div>
+                  <div class="label" style="font-size:11px;margin-bottom:6px">Temp Warning</div>
+                  <div style="display:flex;gap:8px">
+                    <input id="tempThreshold" type="range" min="0" max="100" value="40" style="flex:1">
+                    <span id="tempThresholdValue" style="font-weight:700;min-width:40px">40°C</span>
+                  </div>
+                </div>
+                <div>
+                  <div class="label" style="font-size:11px;margin-bottom:6px">Gas Warning</div>
+                  <div style="display:flex;gap:8px">
+                    <input id="gasThreshold" type="range" min="0" max="100" value="5" style="flex:1">
+                    <span id="gasThresholdValue" style="font-weight:700;min-width:40px">5 PPM</span>
+                  </div>
+                </div>
+                <div>
+                  <div class="label" style="font-size:11px;margin-bottom:6px">Battery Low</div>
+                  <div style="display:flex;gap:8px">
+                    <input id="battThreshold" type="range" min="0" max="100" value="20" style="flex:1">
+                    <span id="battThresholdValue" style="font-weight:700;min-width:40px">20%</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Export Data -->
+            <div class="card">
+              <div class="card-title">Data Export</div>
+              <div style="margin-top:12px;display:flex;flex-direction:column;gap:8px">
+                <button class="small" id="exportCSV" style="background:rgba(0,184,255,0.1);color:var(--primary)">📥 Export CSV</button>
+                <button class="small" id="exportJSON" style="background:rgba(155,108,255,0.1);color:var(--secondary)">📥 Export JSON</button>
+                <button class="small" id="clearHistory" style="background:rgba(255,75,75,0.1);color:#FF4B4B">🗑️ Clear History</button>
+              </div>
+            </div>
+
+            <!-- Update Interval -->
+            <div class="card">
+              <div class="card-title">Settings</div>
+              <div style="margin-top:12px;display:flex;flex-direction:column;gap:8px">
+                <div style="font-size:13px">
+                  <div class="label" style="font-size:11px;margin-bottom:6px">Update Interval</div>
+                  <select id="updateInterval" style="width:100%;padding:6px;border-radius:4px;border:none;background:rgba(255,255,255,0.05);color:var(--text)">
+                    <option value="1000">1 second</option>
+                    <option value="2000" selected>2 seconds</option>
+                    <option value="5000">5 seconds</option>
+                    <option value="10000">10 seconds</option>
+                  </select>
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
-        <div style="margin-top:18px" class="card">
-          <div class="card-title">Recent Readings</div>
-          <table style="width:100%;margin-top:8px;border-collapse:collapse">
-            <thead style="color:var(--muted-text);font-size:13px"><tr><th style="text-align:left;padding:8px">Time</th><th style="text-align:left;padding:8px">Temperature</th><th style="text-align:left;padding:8px">Gas</th><th style="text-align:left;padding:8px">Distance</th></tr></thead>
-            <tbody id="recentReadings" style="font-size:14px;color:var(--muted-text)"></tbody>
-          </table>
         </div>
       </main>
 
       <main class="content view" id="view-control" hidden>
         <h2>Robot Control</h2>
-        <div style="display:grid;grid-template-columns:2fr 1fr;gap:24px;margin-top:16px">
+        <div style="display:grid;grid-template-columns:3fr 1fr;gap:24px;margin-top:16px">
+          <!-- Remote Control Panel -->
           <div class="card">
-            <div class="card-title">Telemetrics & Live Status</div>
-            <div style="display:flex;gap:12px;margin-top:12px">
-              <div style="flex:1"><div class="label">Mode</div><div style="font-weight:700;margin-top:6px" id="tele-mode">Manual</div></div>
-              <div style="flex:1"><div class="label">Connection</div><div style="font-weight:700;margin-top:6px" id="tele-conn">Wi‑Fi (802.11ac)</div></div>
-              <div style="flex:1"><div class="label">Uptime</div><div style="font-weight:700;margin-top:6px" id="tele-uptime">03:24:12</div></div>
+            <div class="card-title">Smart Remote Control</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px">
+              <!-- Joystick/Direction Control -->
+              <div>
+                <div class="label" style="margin-bottom:12px">Direction Control</div>
+                <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;width:180px">
+                  <div></div>
+                  <button class="dir-btn" data-cmd="forward" title="Forward">▲</button>
+                  <div></div>
+                  <button class="dir-btn" data-cmd="left" title="Left">◀</button>
+                  <button class="stop-btn" id="stopBtn" title="Stop">⊙</button>
+                  <button class="dir-btn" data-cmd="right" title="Right">▶</button>
+                  <div></div>
+                  <button class="dir-btn" data-cmd="back" title="Backward">▼</button>
+                  <div></div>
+                </div>
+              </div>
+
+              <!-- Speed Control -->
+              <div>
+                <div class="label">Speed Control</div>
+                <div style="margin-top:12px;display:flex;flex-direction:column;gap:8px">
+                  <input id="speedRange" type="range" min="0" max="100" value="50" style="width:100%">
+                  <div style="display:flex;justify-content:space-between;align-items:center">
+                    <span style="font-size:12px;color:var(--muted-text)">Slow</span>
+                    <span id="speedValue" style="font-weight:700;color:var(--primary)">50%</span>
+                    <span style="font-size:12px;color:var(--muted-text)">Fast</span>
+                  </div>
+                  <div style="display:flex;gap:4px;height:6px;border-radius:3px;overflow:hidden;background:rgba(255,255,255,0.1)">
+                    <div id="speedBar" style="width:50%;background:linear-gradient(90deg,var(--primary),var(--secondary));transition:width 100ms"></div>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div style="margin-top:12px" class="label">Command Log</div>
-            <div id="cmdLog" style="margin-top:8px;max-height:180px;overflow:auto;background:rgba(255,255,255,0.01);padding:8px;border-radius:8px;color:var(--muted-text)"><div>[12:03:12] Forward 1m</div><div>[12:03:22] Left 90°</div></div>
+
+            <!-- Mode Selection -->
+            <div style="margin-top:20px;display:flex;gap:8px;flex-wrap:wrap">
+              <div style="flex:1;min-width:160px">
+                <div class="label" style="margin-bottom:8px">Operation Mode</div>
+                <div style="display:flex;gap:6px">
+                  <button id="manualBtn" class="mode-btn active" data-mode="manual">Manual</button>
+                  <button id="autoBtn" class="mode-btn" data-mode="auto">Auto</button>
+                  <button id="homeBtn" class="mode-btn" data-mode="home">Return Home</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Smart Features -->
+            <div style="margin-top:20px;display:grid;grid-template-columns:repeat(2,1fr);gap:12px">
+              <div style="padding:12px;border-radius:8px;background:rgba(0,184,255,0.06);border:1px solid rgba(0,184,255,0.1)">
+                <div class="label" style="font-size:12px;margin-bottom:6px">Auto Avoid</div>
+                <label class="toggle"><input type="checkbox" id="autoAvoid"> Enable</label>
+              </div>
+              <div style="padding:12px;border-radius:8px;background:rgba(155,108,255,0.06);border:1px solid rgba(155,108,255,0.1)">
+                <div class="label" style="font-size:12px;margin-bottom:6px">Headlights</div>
+                <label class="toggle"><input type="checkbox" id="headlights"> Enable</label>
+              </div>
+              <div style="padding:12px;border-radius:8px;background:rgba(255,159,67,0.06);border:1px solid rgba(255,159,67,0.1)">
+                <div class="label" style="font-size:12px;margin-bottom:6px">Alarm</div>
+                <label class="toggle"><input type="checkbox" id="alarm"> Enable</label>
+              </div>
+              <div style="padding:12px;border-radius:8px;background:rgba(40,208,123,0.06);border:1px solid rgba(40,208,123,0.1)">
+                <div class="label" style="font-size:12px;margin-bottom:6px">Recording</div>
+                <label class="toggle"><input type="checkbox" id="recording"> Enable</label>
+              </div>
+            </div>
+
+            <!-- Emergency & Calibration -->
+            <div style="margin-top:20px;display:flex;gap:8px">
+              <button id="calibrateBtn" class="small">Calibrate Sensors</button>
+              <button id="emergencyStopBtn" class="small" style="background:#FF4B4B;color:white;flex:1">🚨 Emergency Stop</button>
+            </div>
           </div>
 
-          <div class="card">
-            <div class="card-title">Controls</div>
-            <div style="display:flex;flex-direction:column;gap:12px;margin-top:12px">
-              <div style="display:flex;gap:8px">
-                <button class="small">Takeoff</button>
-                <button class="small">Return</button>
-                <button id="calibrateBtn" class="small">Calibrate</button>
+          <!-- Status & Telemetry Panel -->
+          <div style="display:flex;flex-direction:column;gap:16px">
+            <div class="card">
+              <div class="card-title">Live Status</div>
+              <div style="margin-top:12px;display:flex;flex-direction:column;gap:12px">
+                <div>
+                  <div class="label" style="font-size:12px;margin-bottom:4px">Mode</div>
+                  <div style="font-weight:700" id="tele-mode">Manual</div>
+                </div>
+                <div>
+                  <div class="label" style="font-size:12px;margin-bottom:4px">Connection</div>
+                  <div style="display:flex;align-items:center;gap:6px">
+                    <span style="font-weight:700" id="tele-conn">Connected</span>
+                    <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--success)"></span>
+                  </div>
+                </div>
+                <div>
+                  <div class="label" style="font-size:12px;margin-bottom:4px">Battery</div>
+                  <div style="display:flex;align-items:center;gap:8px;margin-top:4px">
+                    <div style="flex:1;height:6px;border-radius:3px;background:rgba(255,255,255,0.1);overflow:hidden">
+                      <div id="batteryBar" style="height:100%;width:88%;background:linear-gradient(90deg,var(--success),var(--primary));transition:width 200ms"></div>
+                    </div>
+                    <span id="batteryPercent" style="font-weight:700;min-width:35px">88%</span>
+                  </div>
+                </div>
+                <div>
+                  <div class="label" style="font-size:12px;margin-bottom:4px">Signal Strength</div>
+                  <div id="liveSignal" style="display:flex;gap:2px;align-items:flex-end;height:20px">
+                    <!-- Bars updated by JS -->
+                  </div>
+                </div>
               </div>
-              <div class="label">Manual Directional Controls</div>
-              <div style="display:flex;gap:8px"><button class="small">↑</button><button class="small">↓</button><button class="small">←</button><button class="small">→</button></div>
+            </div>
+
+            <div class="card">
+              <div class="card-title">Telemetry</div>
+              <div style="margin-top:12px;display:flex;flex-direction:column;gap:10px;font-size:13px">
+                <div style="display:flex;justify-content:space-between">
+                  <span class="label">Distance</span>
+                  <span id="tele-dist" style="font-weight:700">--</span>
+                </div>
+                <div style="display:flex;justify-content:space-between">
+                  <span class="label">Temperature</span>
+                  <span id="tele-temp" style="font-weight:700">--</span>
+                </div>
+                <div style="display:flex;justify-content:space-between">
+                  <span class="label">Heading</span>
+                  <span id="tele-heading" style="font-weight:700">--</span>
+                </div>
+                <div style="display:flex;justify-content:space-between">
+                  <span class="label">Uptime</span>
+                  <span id="tele-uptime" style="font-weight:700">03:24:12</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-title">Command Log</div>
+              <div id="cmdLog" style="margin-top:8px;max-height:200px;overflow-y:auto;background:rgba(255,255,255,0.01);padding:8px;border-radius:8px;color:var(--muted-text);font-size:12px">
+                <div style="color:var(--success)">[12:03:12] Robot initialized</div>
+                <div>[12:03:22] Sensors calibrated</div>
+              </div>
             </div>
           </div>
         </div>
@@ -246,40 +644,449 @@
 
       <main class="content view" id="view-camera" hidden>
         <h2>Camera View</h2>
-        <div class="card" style="margin-top:12px">
-          <div class="card-title">Primary Camera</div>
-          <div class="camera-placeholder" style="height:420px;margin-top:12px"><div class="camera-inner">Live feed placeholder (WebRTC / RTSP)</div></div>
-          <div style="display:flex;gap:8px;margin-top:12px"><button class="small">Snapshot</button><button class="small">Record</button><button class="small">Stream Settings</button></div>
-          <div class="card-title" style="margin-top:16px">Snapshots</div>
-          <div id="snapshotGallery" style="display:flex;gap:8px;margin-top:8px;overflow:auto"><div style="width:120px;height:70px;background:rgba(255,255,255,0.02);border-radius:6px;display:flex;align-items:center;justify-content:center;color:var(--muted-text)">No snapshots</div></div>
+        <div style="display:grid;grid-template-columns:3fr 1fr;gap:24px;margin-top:16px">
+          <!-- Main Camera Feed -->
+          <div class="card">
+            <div class="card-title" style="display:flex;justify-content:space-between;align-items:center">
+              <span>Primary Camera Feed</span>
+              <div style="display:flex;gap:6px">
+                <button id="recordBtn" class="small camera-btn" title="Record" style="background:rgba(255,75,75,0.1);color:#FF4B4B">⏺ Record</button>
+                <button id="screenshotBtn" class="small camera-btn" title="Screenshot">📸 Snap</button>
+                <button id="fullscreenBtn" class="small camera-btn" title="Fullscreen">⛶ Full</button>
+              </div>
+            </div>
+            <div id="cameraFeed" class="camera-placeholder" style="height:480px;margin-top:12px;position:relative;background:#000">
+              <div class="camera-inner" style="font-size:14px">Live feed placeholder<br/>(WebRTC / RTSP Stream)</div>
+              <div id="recordingIndicator" style="position:absolute;top:12px;right:12px;display:none;background:#FF4B4B;color:white;padding:6px 12px;border-radius:6px;font-weight:700;font-size:12px;animation:pulse-recording 1s infinite">🔴 REC</div>
+            </div>
+
+            <!-- Camera Controls -->
+            <div style="margin-top:16px;display:grid;grid-template-columns:1fr 1fr;gap:12px">
+              <!-- Zoom Control -->
+              <div>
+                <div class="label" style="font-size:12px">Zoom Level</div>
+                <div style="margin-top:8px;display:flex;align-items:center;gap:8px">
+                  <button class="zoom-btn" id="zoomOut" title="Zoom Out" style="min-width:32px">−</button>
+                  <input id="zoomRange" type="range" min="100" max="300" value="100" style="flex:1">
+                  <button class="zoom-btn" id="zoomIn" title="Zoom In" style="min-width:32px">+</button>
+                </div>
+                <div style="text-align:center;color:var(--muted-text);font-size:12px;margin-top:4px" id="zoomValue">100%</div>
+              </div>
+
+              <!-- Quality Control -->
+              <div>
+                <div class="label" style="font-size:12px">Stream Quality</div>
+                <div style="margin-top:8px;display:flex;gap:4px">
+                  <button class="quality-btn active" data-quality="low">Low</button>
+                  <button class="quality-btn" data-quality="medium">Med</button>
+                  <button class="quality-btn" data-quality="high">High</button>
+                  <button class="quality-btn" data-quality="ultra">4K</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Advanced Camera Settings -->
+            <div style="margin-top:16px;padding:12px;border-radius:8px;background:rgba(255,255,255,0.01);border:1px solid rgba(255,255,255,0.05)">
+              <div class="label" style="font-size:12px;margin-bottom:12px">Advanced Settings</div>
+              <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;font-size:13px">
+                <div>
+                  <div style="color:var(--muted-text);margin-bottom:4px">Brightness</div>
+                  <input id="brightnessSlider" type="range" min="0" max="100" value="50" style="width:100%">
+                </div>
+                <div>
+                  <div style="color:var(--muted-text);margin-bottom:4px">Contrast</div>
+                  <input id="contrastSlider" type="range" min="0" max="100" value="50" style="width:100%">
+                </div>
+                <div>
+                  <div style="color:var(--muted-text);margin-bottom:4px">Saturation</div>
+                  <input id="saturationSlider" type="range" min="0" max="100" value="50" style="width:100%">
+                </div>
+                <div>
+                  <div style="color:var(--muted-text);margin-bottom:4px">FPS</div>
+                  <select id="fpsSelect" style="width:100%;padding:6px;border-radius:4px;border:none;background:rgba(255,255,255,0.05);color:var(--text)">
+                    <option value="24">24 FPS</option>
+                    <option value="30" selected>30 FPS</option>
+                    <option value="60">60 FPS</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- Smart Features -->
+            <div style="margin-top:16px;display:grid;grid-template-columns:repeat(2,1fr);gap:12px">
+              <div style="padding:12px;border-radius:8px;background:rgba(0,184,255,0.06);border:1px solid rgba(0,184,255,0.1)">
+                <div class="label" style="font-size:12px;margin-bottom:6px">Motion Detection</div>
+                <label class="toggle"><input type="checkbox" id="motionDetection"> Enable</label>
+              </div>
+              <div style="padding:12px;border-radius:8px;background:rgba(155,108,255,0.06);border:1px solid rgba(155,108,255,0.1)">
+                <div class="label" style="font-size:12px;margin-bottom:6px">Night Vision</div>
+                <label class="toggle"><input type="checkbox" id="nightVision"> Enable</label>
+              </div>
+              <div style="padding:12px;border-radius:8px;background:rgba(255,159,67,0.06);border:1px solid rgba(255,159,67,0.1)">
+                <div class="label" style="font-size:12px;margin-bottom:6px">Image Stabilization</div>
+                <label class="toggle"><input type="checkbox" id="stabilization"> Enable</label>
+              </div>
+              <div style="padding:12px;border-radius:8px;background:rgba(40,208,123,0.06);border:1px solid rgba(40,208,123,0.1)">
+                <div class="label" style="font-size:12px;margin-bottom:6px">Auto Focus</div>
+                <label class="toggle"><input type="checkbox" id="autoFocus" checked> Enable</label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Camera Info & Controls Panel -->
+          <div style="display:flex;flex-direction:column;gap:16px">
+            <!-- Stream Info -->
+            <div class="card">
+              <div class="card-title">Stream Info</div>
+              <div style="margin-top:12px;display:flex;flex-direction:column;gap:10px;font-size:13px">
+                <div style="display:flex;justify-content:space-between">
+                  <span class="label">Resolution</span>
+                  <span id="streamResolution" style="font-weight:700">1920x1080</span>
+                </div>
+                <div style="display:flex;justify-content:space-between">
+                  <span class="label">Bitrate</span>
+                  <span id="streamBitrate" style="font-weight:700">5.2 Mbps</span>
+                </div>
+                <div style="display:flex;justify-content:space-between">
+                  <span class="label">FPS</span>
+                  <span id="streamFps" style="font-weight:700">30</span>
+                </div>
+                <div style="display:flex;justify-content:space-between">
+                  <span class="label">Latency</span>
+                  <span id="streamLatency" style="font-weight:700">45ms</span>
+                </div>
+                <div style="display:flex;justify-content:space-between">
+                  <span class="label">Codec</span>
+                  <span id="streamCodec" style="font-weight:700">H.264</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Recording Info -->
+            <div class="card">
+              <div class="card-title">Recording</div>
+              <div style="margin-top:12px;display:flex;flex-direction:column;gap:10px">
+                <div>
+                  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+                    <span class="label" style="font-size:12px">Status</span>
+                    <span id="recordingStatus" style="font-weight:700;color:var(--muted-text)">Idle</span>
+                  </div>
+                  <div style="height:4px;border-radius:2px;background:rgba(255,255,255,0.1);overflow:hidden">
+                    <div id="recordingProgress" style="height:100%;width:0%;background:linear-gradient(90deg,var(--primary),var(--secondary));transition:width 100ms"></div>
+                  </div>
+                </div>
+                <div>
+                  <div class="label" style="font-size:12px;margin-bottom:4px">Duration</div>
+                  <div id="recordingDuration" style="font-weight:700;font-size:14px">00:00:00</div>
+                </div>
+                <div>
+                  <div class="label" style="font-size:12px;margin-bottom:4px">Size</div>
+                  <div id="recordingSize" style="font-weight:700">0 MB</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Snapshot Gallery -->
+            <div class="card">
+              <div class="card-title">Recent Snapshots</div>
+              <div id="snapshotGallery" style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:12px;max-height:200px;overflow-y:auto">
+                <div style="aspect-ratio:16/9;background:rgba(255,255,255,0.02);border-radius:6px;display:flex;align-items:center;justify-content:center;color:var(--muted-text);font-size:12px">No snapshots</div>
+              </div>
+            </div>
+          </div>
         </div>
       </main>
 
       <main class="content view" id="view-alerts" hidden>
-        <h2>Alerts</h2>
-        <div style="display:flex;gap:12px;margin-top:12px;align-items:center"><div class="label">Filter:</div><button class="small">All</button><button class="small">Warnings</button><button class="small">Critical</button></div>
-        <div class="card" style="margin-top:12px">
-          <div class="card-title">All Alerts</div>
-          <ul id="alertsMainList" class="alerts-list" style="margin-top:8px"></ul>
-        </div>
+        <!-- Alert Statistics -->
+        <section class="alert-stats">
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px">
+            <div class="card" style="background:rgba(40,208,123,0.05);border:1px solid rgba(40,208,123,0.2)">
+              <div class="label" style="font-size:12px;color:var(--muted-text)">Active Alerts</div>
+              <div style="font-size:28px;font-weight:700;color:#28D07B;margin-top:8px" id="alertCountActive">0</div>
+            </div>
+            <div class="card" style="background:rgba(255,159,67,0.05);border:1px solid rgba(255,159,67,0.2)">
+              <div class="label" style="font-size:12px;color:var(--muted-text)">Warnings</div>
+              <div style="font-size:28px;font-weight:700;color:#FF9F43;margin-top:8px" id="alertCountWarning">0</div>
+            </div>
+            <div class="card" style="background:rgba(255,75,75,0.05);border:1px solid rgba(255,75,75,0.2)">
+              <div class="label" style="font-size:12px;color:var(--muted-text)">Critical</div>
+              <div style="font-size:28px;font-weight:700;color:#FF4B4B;margin-top:8px" id="alertCountCritical">0</div>
+            </div>
+            <div class="card" style="background:rgba(0,184,255,0.05);border:1px solid rgba(0,184,255,0.2)">
+              <div class="label" style="font-size:12px;color:var(--muted-text)">Resolved Today</div>
+              <div style="font-size:28px;font-weight:700;color:#00B8FF;margin-top:8px" id="alertCountResolved">0</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Alert Controls & Filters -->
+        <section style="margin-top:20px">
+          <div style="display:flex;gap:12px;align-items:center;margin-bottom:16px">
+            <div class="label">Filter by level:</div>
+            <button class="filter-btn active" data-filter="all">All</button>
+            <button class="filter-btn" data-filter="warning">⚠️ Warnings</button>
+            <button class="filter-btn" data-filter="critical">🔴 Critical</button>
+            <button class="filter-btn" data-filter="resolved">✓ Resolved</button>
+          </div>
+          <div style="display:flex;gap:12px;align-items:center">
+            <button id="alertAckAll" class="btn small" style="background:rgba(40,208,123,0.2);color:#28D07B">Acknowledge All</button>
+            <button id="alertClearResolved" class="btn small" style="background:rgba(155,108,255,0.2);color:#9B6CFF">Clear Resolved</button>
+            <button id="alertExport" class="btn small" style="background:rgba(0,184,255,0.2);color:#00B8FF">Export Log</button>
+          </div>
+        </section>
+
+        <!-- Alert Timeline -->
+        <section style="margin-top:20px">
+          <div class="card">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+              <div class="card-title">Alert Timeline</div>
+              <div style="font-size:11px;color:var(--muted-text)" id="alertTimestamp">--:--:--</div>
+            </div>
+            <ul id="alertsMainList" class="alerts-list" style="margin-top:8px"></ul>
+          </div>
+        </section>
+
+        <!-- Alert Statistics & Trends -->
+        <section style="margin-top:20px">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            <div class="card">
+              <div class="card-title">Alert Summary</div>
+              <div style="margin-top:12px;font-size:13px;color:var(--muted-text)">
+                <div style="display:flex;justify-content:space-between;margin-top:8px">
+                  <span>Last hour:</span>
+                  <span style="color:var(--primary);font-weight:600" id="alertCountLastHour">0 alerts</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;margin-top:8px">
+                  <span>Avg response time:</span>
+                  <span style="color:var(--primary);font-weight:600" id="alertAvgResponse">-- ms</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;margin-top:8px">
+                  <span>Most frequent:</span>
+                  <span style="color:var(--primary);font-weight:600" id="alertMostFrequent">--</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;margin-top:8px">
+                  <span>System reliability:</span>
+                  <span style="color:#28D07B;font-weight:600" id="alertReliability">99.5%</span>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-title">Quick Actions</div>
+              <div style="margin-top:12px;display:flex;flex-direction:column;gap:8px">
+                <button id="alertViewCritical" class="btn small" style="background:rgba(255,75,75,0.15);color:#FF4B4B;text-align:left">View Critical Only</button>
+                <button id="alertSilenceAll" class="btn small" style="background:rgba(255,159,67,0.15);color:#FF9F43;text-align:left">Silence Notifications</button>
+                <button id="alertAutoResolve" class="btn small" style="background:rgba(40,208,123,0.15);color:#28D07B;text-align:left">Auto Resolve Warnings</button>
+              </div>
+            </div>
+          </div>
+        </section>
       </main>
 
       <main class="content view" id="view-settings" hidden>
-        <h2>Settings</h2>
-        <div class="card" style="margin-top:12px;display:grid;grid-template-columns:1fr 1fr;gap:12px">
-          <div>
-            <div class="label">Network</div>
-            <div style="margin-top:8px">IP: 192.168.1.42 • Gateway: 192.168.1.1</div>
-            <div class="label" style="margin-top:12px">Time Sync</div>
-            <div style="margin-top:8px">NTP Server: time.example.com</div>
+        <!-- Settings Statistics -->
+        <section class="settings-stats">
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px">
+            <div class="card" style="background:rgba(0,184,255,0.05);border:1px solid rgba(0,184,255,0.2)">
+              <div class="label" style="font-size:12px;color:var(--muted-text)">Theme</div>
+              <div style="font-size:28px;font-weight:700;color:#00B8FF;margin-top:8px" id="settingThemeMode">Dark</div>
+            </div>
+            <div class="card" style="background:rgba(40,208,123,0.05);border:1px solid rgba(40,208,123,0.2)">
+              <div class="label" style="font-size:12px;color:var(--muted-text)">Notifications</div>
+              <div style="font-size:28px;font-weight:700;color:#28D07B;margin-top:8px" id="settingNotifStatus">On</div>
+            </div>
+            <div class="card" style="background:rgba(255,159,67,0.05);border:1px solid rgba(255,159,67,0.2)">
+              <div class="label" style="font-size:12px;color:var(--muted-text)">Automations</div>
+              <div style="font-size:28px;font-weight:700;color:#FF9F43;margin-top:8px" id="settingAutoCount">3</div>
+            </div>
+            <div class="card" style="background:rgba(138,93,226,0.05);border:1px solid rgba(138,93,226,0.2)">
+              <div class="label" style="font-size:12px;color:var(--muted-text)">Data Usage</div>
+              <div style="font-size:28px;font-weight:700;color:#8A5DE2;margin-top:8px" id="settingDataUsage">42%</div>
+            </div>
           </div>
-          <div>
-            <div class="label">Calibration</div>
-            <div style="margin-top:8px">Temperature offset: +0.2°C • Proximity offset: +1cm</div>
-            <div class="label" style="margin-top:12px">Appearance</div>
-            <div style="margin-top:8px"><label><input type="checkbox" id="toggleTheme"> Reduced motion</label></div>
+        </section>
+
+        <!-- System Settings -->
+        <section style="margin-top:24px">
+          <h3 style="margin-bottom:16px;color:var(--primary)">⚙️ System Settings</h3>
+          <div class="settings-group">
+            <div class="setting-item">
+              <div style="display:flex;justify-content:space-between;align-items:center">
+                <div>
+                  <div class="label">Auto Calibration</div>
+                  <div style="font-size:12px;color:var(--muted-text);margin-top:4px">Automatic sensor calibration on startup</div>
+                </div>
+                <input type="checkbox" class="setting-toggle" id="settingAutoCalib" checked>
+              </div>
+            </div>
+            <div class="setting-item">
+              <div style="display:flex;justify-content:space-between;align-items:center">
+                <div>
+                  <div class="label">Network Time Sync</div>
+                  <div style="font-size:12px;color:var(--muted-text);margin-top:4px">Sync time with NTP server</div>
+                </div>
+                <input type="checkbox" class="setting-toggle" id="settingTimeSync" checked>
+              </div>
+            </div>
+            <div class="setting-item">
+              <div style="display:flex;justify-content:space-between;align-items:center">
+                <div>
+                  <div class="label">Health Check Interval</div>
+                  <div style="font-size:12px;color:var(--muted-text);margin-top:4px">Check system health frequency</div>
+                </div>
+                <select class="setting-select" id="settingHealthInterval" style="width:120px">
+                  <option>30 seconds</option>
+                  <option>1 minute</option>
+                  <option selected>2 minutes</option>
+                  <option>5 minutes</option>
+                </select>
+              </div>
+            </div>
           </div>
-        </div>
+        </section>
+
+        <!-- Appearance Settings -->
+        <section style="margin-top:24px">
+          <h3 style="margin-bottom:16px;color:var(--primary)">🎨 Appearance</h3>
+          <div class="settings-group">
+            <div class="setting-item">
+              <div style="display:flex;justify-content:space-between;align-items:center">
+                <div>
+                  <div class="label">Dark Mode</div>
+                  <div style="font-size:12px;color:var(--muted-text);margin-top:4px">Use dark theme</div>
+                </div>
+                <input type="checkbox" class="setting-toggle" id="settingDarkMode" checked>
+              </div>
+            </div>
+            <div class="setting-item">
+              <div style="display:flex;justify-content:space-between;align-items:center">
+                <div>
+                  <div class="label">Reduced Motion</div>
+                  <div style="font-size:12px;color:var(--muted-text);margin-top:4px">Minimize animations and transitions</div>
+                </div>
+                <input type="checkbox" class="setting-toggle" id="settingReduceMotion">
+              </div>
+            </div>
+            <div class="setting-item">
+              <div style="display:flex;justify-content:space-between;align-items:center">
+                <div>
+                  <div class="label">Compact View</div>
+                  <div style="font-size:12px;color:var(--muted-text);margin-top:4px">Condensed interface layout</div>
+                </div>
+                <input type="checkbox" class="setting-toggle" id="settingCompactView">
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Notification Settings -->
+        <section style="margin-top:24px">
+          <h3 style="margin-bottom:16px;color:var(--primary)">🔔 Notifications</h3>
+          <div class="settings-group">
+            <div class="setting-item">
+              <div style="display:flex;justify-content:space-between;align-items:center">
+                <div>
+                  <div class="label">All Notifications</div>
+                  <div style="font-size:12px;color:var(--muted-text);margin-top:4px">Enable/disable all notifications</div>
+                </div>
+                <input type="checkbox" class="setting-toggle" id="settingAllNotif" checked>
+              </div>
+            </div>
+            <div class="setting-item">
+              <div style="display:flex;justify-content:space-between;align-items:center">
+                <div>
+                  <div class="label">Critical Alerts</div>
+                  <div style="font-size:12px;color:var(--muted-text);margin-top:4px">Always notify for critical issues</div>
+                </div>
+                <input type="checkbox" class="setting-toggle" id="settingCriticalNotif" checked>
+              </div>
+            </div>
+            <div class="setting-item">
+              <div style="display:flex;justify-content:space-between;align-items:center">
+                <div>
+                  <div class="label">Sound Alerts</div>
+                  <div style="font-size:12px;color:var(--muted-text);margin-top:4px">Play sound on alerts</div>
+                </div>
+                <input type="checkbox" class="setting-toggle" id="settingSoundAlert" checked>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Automation Settings -->
+        <section style="margin-top:24px">
+          <h3 style="margin-bottom:16px;color:var(--primary)">🤖 Automations</h3>
+          <div class="settings-group">
+            <div class="setting-item">
+              <div style="display:flex;justify-content:space-between;align-items:center">
+                <div>
+                  <div class="label">Auto-Restart on Failure</div>
+                  <div style="font-size:12px;color:var(--muted-text);margin-top:4px">Automatically restart failed processes</div>
+                </div>
+                <input type="checkbox" class="setting-toggle" id="settingAutoRestart" checked>
+              </div>
+            </div>
+            <div class="setting-item">
+              <div style="display:flex;justify-content:space-between;align-items:center">
+                <div>
+                  <div class="label">Auto-Resolve Warnings</div>
+                  <div style="font-size:12px;color:var(--muted-text);margin-top:4px">Automatically resolve non-critical warnings</div>
+                </div>
+                <input type="checkbox" class="setting-toggle" id="settingAutoResolve">
+              </div>
+            </div>
+            <div class="setting-item">
+              <div style="display:flex;justify-content:space-between;align-items:center">
+                <div>
+                  <div class="label">Log Rotation</div>
+                  <div style="font-size:12px;color:var(--muted-text);margin-top:4px">Archive logs weekly</div>
+                </div>
+                <input type="checkbox" class="setting-toggle" id="settingLogRotate" checked>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Advanced Settings -->
+        <section style="margin-top:24px;margin-bottom:24px">
+          <h3 style="margin-bottom:16px;color:var(--primary)">⚡ Advanced</h3>
+          <div class="settings-group">
+            <div class="setting-item">
+              <div style="display:flex;justify-content:space-between;align-items:center">
+                <div>
+                  <div class="label">Network IP Address</div>
+                  <div style="font-size:12px;color:var(--muted-text);margin-top:4px" id="settingNetworkIP">192.168.1.42</div>
+                </div>
+              </div>
+            </div>
+            <div class="setting-item">
+              <div style="display:flex;justify-content:space-between;align-items:center">
+                <div>
+                  <div class="label">Temperature Offset</div>
+                  <div style="font-size:12px;color:var(--muted-text);margin-top:4px">Calibration adjustment</div>
+                </div>
+                <input type="number" class="setting-number" id="settingTempOffset" value="0.2" step="0.1" style="width:100px">
+              </div>
+            </div>
+            <div class="setting-item">
+              <div style="display:flex;justify-content:space-between;align-items:center">
+                <div>
+                  <div class="label">Proximity Offset</div>
+                  <div style="font-size:12px;color:var(--muted-text);margin-top:4px">Distance calibration (cm)</div>
+                </div>
+                <input type="number" class="setting-number" id="settingProxOffset" value="1" step="0.5" style="width:100px">
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Control Buttons -->
+        <section style="display:flex;gap:12px;margin-bottom:24px">
+          <button id="settingsSave" class="btn" style="background:rgba(40,208,123,0.2);color:#28D07B">💾 Save Settings</button>
+          <button id="settingsExport" class="btn" style="background:rgba(0,184,255,0.2);color:#00B8FF">📥 Export Config</button>
+          <button id="settingsReset" class="btn" style="background:rgba(255,159,67,0.2);color:#FF9F43">↺ Reset to Default</button>
+          <button id="settingsClear" class="btn" style="background:rgba(255,75,75,0.2);color:#FF4B4B">🗑️ Clear Cache</button>
+        </section>
       </main>
 
     </div>

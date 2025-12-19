@@ -43,6 +43,7 @@ body{margin:0;font-family:Inter,system-ui,-apple-system,'Segoe UI',Roboto,Arial;
 .sensor-card:hover{transform:translateY(-6px)}
 .card-row{display:flex;justify-content:space-between;align-items:center}
 .card-icon{font-size:22px}
+.signal-bars{display:flex;gap:3px;align-items:flex-end;height:28px;justify-content:center}
 
 /* Sensor emoji animations */
 .sensor-icon{display:inline-block;transform-origin:center center;transition:transform 220ms var(--anim-spring)}
@@ -146,3 +147,62 @@ body{margin:0;font-family:Inter,system-ui,-apple-system,'Segoe UI',Roboto,Arial;
 /* Button press micro animation */
 .btn,button{transition:transform var(--anim-fast) var(--anim-spring),box-shadow var(--anim-fast) var(--anim-spring)}
 .btn:active,button:active{transform:scale(0.985)}
+
+/* Direction Control Buttons */
+.dir-btn{padding:12px;border-radius:8px;border:2px solid rgba(0,184,255,0.2);background:rgba(0,184,255,0.05);color:var(--text);cursor:pointer;font-size:16px;font-weight:600;transition:all 150ms ease;display:flex;align-items:center;justify-content:center;min-height:48px}
+.dir-btn:hover{border-color:var(--primary);background:rgba(0,184,255,0.15);box-shadow:0 4px 12px rgba(0,184,255,0.1)}
+.dir-btn:active{background:rgba(0,184,255,0.25);transform:scale(0.95)}
+
+/* Stop Button */
+.stop-btn{padding:12px;border-radius:50%;border:3px solid rgba(255,75,75,0.3);background:rgba(255,75,75,0.08);color:#FF4B4B;cursor:pointer;font-size:18px;font-weight:700;transition:all 150ms ease;width:50px;height:50px;display:flex;align-items:center;justify-content:center}
+.stop-btn:hover{border-color:#FF4B4B;background:rgba(255,75,75,0.2);box-shadow:0 4px 12px rgba(255,75,75,0.15)}
+.stop-btn:active{transform:scale(0.92)}
+
+/* Mode Buttons */
+.mode-btn{padding:8px 16px;border-radius:6px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.02);color:var(--muted-text);cursor:pointer;font-size:13px;font-weight:600;transition:all 150ms ease}
+.mode-btn:hover{border-color:var(--primary);background:rgba(0,184,255,0.1)}
+.mode-btn.active{border-color:var(--primary);background:var(--primary);color:#001018;box-shadow:0 4px 12px rgba(0,184,255,0.2)}
+
+/* Toggle Switch */
+.toggle{display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;font-weight:500}
+.toggle input[type="checkbox"]{appearance:none;-webkit-appearance:none;width:36px;height:20px;border-radius:10px;border:1px solid rgba(255,255,255,0.2);background:rgba(255,255,255,0.05);cursor:pointer;position:relative;transition:all 150ms ease;outline:none}
+.toggle input[type="checkbox"]:checked{background:var(--primary);border-color:var(--primary)}
+.toggle input[type="checkbox"]::before{content:'';position:absolute;width:16px;height:16px;border-radius:50%;background:white;left:2px;top:50%;transform:translateY(-50%);transition:left 150ms ease}
+.toggle input[type="checkbox"]:checked::before{left:18px}
+
+/* Camera Control Buttons */
+.camera-btn,.zoom-btn{padding:8px 12px;border-radius:6px;border:1px solid rgba(0,184,255,0.2);background:rgba(0,184,255,0.05);color:var(--text);cursor:pointer;font-size:12px;font-weight:600;transition:all 150ms ease}
+.camera-btn:hover,.zoom-btn:hover{border-color:var(--primary);background:rgba(0,184,255,0.15);box-shadow:0 4px 12px rgba(0,184,255,0.1)}
+.camera-btn:active,.zoom-btn:active{transform:scale(0.95)}
+
+/* Quality Buttons */
+.quality-btn{padding:6px 12px;border-radius:4px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.02);color:var(--muted-text);cursor:pointer;font-size:12px;font-weight:600;transition:all 150ms ease;flex:1}
+.quality-btn:hover{border-color:var(--primary);background:rgba(0,184,255,0.1)}
+.quality-btn.active{border-color:var(--primary);background:var(--primary);color:#001018;box-shadow:0 4px 12px rgba(0,184,255,0.2)}
+
+/* Recording Pulse Animation */
+@keyframes pulse-recording{0%{opacity:1}50%{opacity:0.5}100%{opacity:1}}
+
+/* Trend Filter Buttons */
+.trend-filter{padding:8px 14px;border-radius:6px;border:1px solid rgba(0,184,255,0.2);background:rgba(0,184,255,0.05);color:var(--muted-text);cursor:pointer;font-size:12px;font-weight:600;transition:all 150ms ease}
+.trend-filter:hover{border-color:var(--primary);background:rgba(0,184,255,0.1)}
+.trend-filter.active{border-color:var(--primary);background:var(--primary);color:#001018;box-shadow:0 4px 12px rgba(0,184,255,0.2)}
+/* Smart Dashboard Features */
+.system-health{margin-bottom:24px}
+.quick-action{width:100%;display:flex;align-items:center;gap:12px;padding:14px;border-radius:8px;border:none;background:rgba(255,255,255,0.03);cursor:pointer;transition:all 200ms ease;text-align:left;color:var(--text)}
+.quick-action:hover{background:rgba(255,255,255,0.06);transform:translateX(4px)}
+/* Smart Settings Features */
+.settings-stats{margin-bottom:20px}
+.settings-group{display:flex;flex-direction:column;gap:12px;padding:16px;background:rgba(255,255,255,0.02);border-radius:8px;border:1px solid rgba(255,255,255,0.05)}
+.setting-item{padding:12px;background:rgba(255,255,255,0.01);border-radius:6px;border:1px solid rgba(255,255,255,0.03);transition:all 150ms ease}
+.setting-item:hover{background:rgba(255,255,255,0.03);border-color:rgba(255,255,255,0.08)}
+.setting-toggle{width:48px;height:24px;cursor:pointer;accent-color:var(--primary)}
+.setting-select,.setting-number{padding:6px 10px;border-radius:4px;border:1px solid rgba(0,184,255,0.2);background:rgba(0,184,255,0.05);color:var(--text);font-size:14px;cursor:pointer}
+.setting-select:hover,.setting-number:hover{border-color:var(--primary);background:rgba(0,184,255,0.1)}
+.setting-select:focus,.setting-number:focus{outline:none;border-color:var(--primary);box-shadow:0 0 8px rgba(0,184,255,0.3)}
+
+/* Smart Alerts Features */
+.alert-stats{margin-bottom:20px}
+.filter-btn{padding:8px 14px;border-radius:6px;border:1px solid rgba(0,184,255,0.2);background:rgba(0,184,255,0.05);color:var(--muted-text);cursor:pointer;font-size:12px;font-weight:600;transition:all 150ms ease}
+.filter-btn:hover{border-color:var(--primary);background:rgba(0,184,255,0.1)}
+.filter-btn.active{border-color:var(--primary);background:var(--primary);color:#001018;box-shadow:0 4px 12px rgba(0,184,255,0.2)}
