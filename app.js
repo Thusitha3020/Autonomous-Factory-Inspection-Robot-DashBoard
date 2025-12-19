@@ -62,7 +62,7 @@ function pushData(){
   state.temp = +(state.temp + (Math.random()-0.48)*0.6).toFixed(1);
   state.dist = Math.max(5,Math.round(state.dist + (Math.random()-0.5)*6));
   state.gas = +(state.gas + (Math.random()-0.4)*0.5).toFixed(2);
-  state.batt = Math.max(0,Math.round(state.batt - Math.random()*0.02*100)/1);
+  state.batt = Math.max(0,Math.round(state.batt - Math.random()*0.005*100)/1);
   // heading random walk
   state.heading = (state.heading + (Math.random()-0.5)*30) % 360;
 
