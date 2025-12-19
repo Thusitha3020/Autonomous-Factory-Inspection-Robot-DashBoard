@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Autonomous Factory Inspection Robot</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="app-frame">
+    <aside class="sidebar" aria-label="Main navigation">
+      <div class="brand">AFIR</div>
+      <nav class="nav">
+        <button class="nav-item active" data-view="dashboard"><span class="icon">🏠</span><span class="label">Dashboard</span></button>
+        <button class="nav-item" data-view="live"><span class="icon">📈</span><span class="label">Live Sensors</span></button>
+        <button class="nav-item" data-view="control"><span class="icon">🎮</span><span class="label">Robot Control</span></button>
+        <button class="nav-item" data-view="camera"><span class="icon">🎥</span><span class="label">Camera View</span></button>
+        <button class="nav-item" data-view="alerts"><span class="icon">⚠️</span><span class="label">Alerts</span></button>
+        <button class="nav-item" data-view="settings"><span class="icon">⚙️</span><span class="label">Settings</span></button>
+      </nav>
+    </aside>
+
+    <div class="main-area">
+      <header class="header">
+        <div class="title">Autonomous Factory Inspection Robot</div>
+        <div class="header-right">
+          <div id="statusPill" class="status-pill online"><span class="dot"></span><span class="text">Online</span></div>
+          <div id="datetime" class="datetime">--</div>
+        </div>
+      </header>
+
+      <main class="content" id="view-dashboard">
+        <section class="top-row">
+          <div class="sensor-card" id="card-temp">
+            <div class="card-row">
+              <div class="card-icon">🌡️</div>
+              <div class="card-trend">▲ 0.6%</div>
+            </div>
+            <div class="card-value">
+              <div class="value">--</div>
+              <div class="unit">°C</div>
+            </div>
+            <div class="card-footer"><span class="status-dot green"></span><span class="label">Temperature</span></div>
+          </div>
+
+          <div class="sensor-card" id="card-dist">
+            <div class="card-row"><div class="card-icon">📏</div><div class="card-trend">▼ 1.2%</div></div>
+            <div class="card-value"><div class="value">--</div><div class="unit">cm</div></div>
+            <div class="card-footer"><span class="status-dot green"></span><span class="label">Proximity</span></div>
+          </div>
+
+          <div class="sensor-card" id="card-gas">
+            <div class="card-row"><div class="card-icon">💨</div><div class="card-trend">▲ 0.2%</div></div>
+            <div class="card-value"><div class="value">--</div><div class="unit">PPM</div></div>
+            <div class="card-footer"><span class="status-dot green"></span><span class="label">Gas Level</span></div>
+          </div>
+
+          <div class="sensor-card" id="card-batt">
+            <div class="card-row"><div class="card-icon">🔋</div><div class="card-trend">▲ 0.4%</div></div>
+            <div class="card-value"><div class="value">--</div><div class="unit">%</div></div>
+            <div class="card-footer"><span class="status-dot green"></span><span class="label">Battery</span></div>
+          </div>
+        </section>
+
+          <section class="sensor-controls" style="margin-top:18px;">
+            <div class="card" style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+              <div style="min-width:220px">
+                <div class="label">Sensor Controls</div>
+                <div style="color:var(--muted-text);font-size:13px">Manually adjust sensor values for testing</div>
+              </div>
+              <div style="display:flex;gap:8px;align-items:center">
+                <label class="label">Temperature</label>
+                <input id="ctlTemp" type="number" step="0.1" min="-40" max="120" style="width:120px;padding:8px;border-radius:8px;border:none;background:rgba(255,255,255,0.02);color:var(--text)">
+                <label class="label">Proximity</label>
+                <input id="ctlDist" type="range" min="5" max="500" value="120" style="width:180px">
+                <label class="label">Gas</label>
+                <input id="ctlGas" type="number" step="0.01" min="0" max="100" style="width:100px;padding:8px;border-radius:8px;border:none;background:rgba(255,255,255,0.02);color:var(--text)">
+                <label class="label">Battery</label>
+                <input id="ctlBatt" type="range" min="0" max="100" value="88" style="width:140px">
+              </div>
+              <div style="margin-left:auto;display:flex;gap:8px">
+                <button id="applySensors" class="small">Apply</button>
+                <button id="randomSensors" class="small">Randomize</button>
+                <button id="resetSensors" class="small muted">Reset</button>
+              </div>
+              <div style="width:100%;margin-top:12px;display:flex;align-items:center;gap:12px">
+                <div class="label">Environment Theme</div>
+                <div class="theme-picker">
+                  <div class="theme-thumb factory active" data-theme="factory" title="Factory floor"></div>
+                  <div class="theme-thumb night" data-theme="night" title="Night shift"></div>
+                  <div class="theme-thumb warehouse" data-theme="warehouse" title="Warehouse"></div>
+                  <div class="theme-thumb chemical" data-theme="chemical" title="Chemical plant"></div>
+                </div>
+                <select id="themeSelect" style="margin-left:auto;padding:8px;border-radius:8px;background:rgba(255,255,255,0.02);color:var(--text)">
+                  <option value="factory">Factory floor</option>
+                  <option value="night">Night shift</option>
+                  <option value="warehouse">Warehouse</option>
+                  <option value="chemical">Chemical plant</option>
+                </select>
+              </div>
+            </div>
+          </section>
+
+        <section class="middle-row">
+          <div class="card live-chart">
+            <div class="card-header"><div class="card-title">Live Sensor Trends</div><div class="card-controls"><button id="pauseBtn" class="icon-btn">⏸</button></div></div>
+            <canvas id="liveChart"></canvas>
+          </div>
+
+          <div class="card camera-panel">
+            <div class="card-title">Live Camera Feed / Robot View</div>
+            <div class="robot-stage">
+              <div class="robot-scene" id="robotScene">
+                <div id="robotPath" class="robot-path" aria-hidden="true"></div>
+                <div id="sensorCone" class="sensor-cone path" aria-hidden="true"></div>
+                <div id="robot" class="robot" aria-hidden="true">
+                  <!-- simple robot SVG -->
+                  <svg viewBox="0 0 120 80" xmlns="http://www.w3.org/2000/svg">
+                    <g>
+                      <rect x="18" y="12" width="84" height="44" rx="8" fill="#0F171D" stroke="#0B98E6" stroke-width="2"/>
+                      <rect x="36" y="4" width="48" height="20" rx="6" fill="#071018" stroke="#9B6CFF" stroke-width="1"/>
+                      <circle class="wheel" cx="34" cy="64" r="8" fill="#0B1218" stroke="#666"/>
+                      <circle class="wheel" cx="86" cy="64" r="8" fill="#0B1218" stroke="#666"/>
+                      <circle cx="60" cy="32" r="6" fill="#00B8FF" opacity="0.95"/>
+                    </g>
+                  </svg>
+                </div>
+                <div id="robotBehavior" class="robot-behavior idle">Idle</div>
+              </div>
+              <div style="display:flex;gap:8px;width:100%;justify-content:space-between">
+                <div class="label">Robot position</div>
+                <div id="robotPosLabel" style="color:var(--muted-text)">--</div>
+              </div>
+            </div>
+            <div class="camera-controls"><button class="small">Snapshot</button><button class="small">Fullscreen</button></div>
+          </div>
+        </section>
+
+        <section class="bottom-row">
+          <div class="card control-panel">
+            <div class="card-title">Robot Control</div>
+            <div class="controls-grid">
+              <div class="dpad">
+                <button class="dir" data-cmd="forward">▲</button>
+                <div class="dpad-row"><button class="dir" data-cmd="left">◀</button><button class="stop" id="stopBtn">STOP</button><button class="dir" data-cmd="right">▶</button></div>
+                <button class="dir" data-cmd="back">▼</button>
+              </div>
+              <div class="control-side">
+                <label class="label">Speed</label>
+                <input id="speedRange" type="range" min="0" max="100" value="50">
+                <div class="toggles">
+                  <label class="toggle"><input type="checkbox" id="autoMode"> Auto Mode</label>
+                  <label class="toggle"><input type="checkbox" id="headlights"> Headlights</label>
+                  <label class="toggle"><input type="checkbox" id="alarm"> Alarm</label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card alerts-panel">
+            <div class="card-title">Alerts & Notifications</div>
+            <ul id="alertsList" class="alerts-list">
+              <!-- Alerts appended here -->
+            </ul>
+            <div class="alerts-foot"><button id="clearAlerts" class="small muted">Clear All</button></div>
+          </div>
+        </section>
+      </main>
+
+      <!-- Other views populated with relevant information -->
+      <main class="content view" id="view-live" hidden>
+        <h2>Live Sensors</h2>
+        <div class="live-grid" style="display:grid;grid-template-columns:repeat(12,1fr);gap:24px;margin-top:16px">
+          <div class="card" style="grid-column:span 6">
+            <div class="card-title">Expanded Sensor Overview</div>
+            <div style="display:flex;gap:12px;margin-top:12px">
+              <div style="flex:1;padding:12px;border-radius:10px;background:rgba(255,255,255,0.01)">
+                <div class="label">Temperature</div>
+                <div style="font-size:40px;font-weight:700;margin-top:8px" id="live-temp">-- °C</div>
+                <div style="color:var(--muted-text);margin-top:6px">Sensor: Ambient probe • Status: <span class="status-dot green"></span></div>
+              </div>
+              <div style="flex:1;padding:12px;border-radius:10px;background:rgba(255,255,255,0.01)">
+                <div class="label">Proximity</div>
+                <div style="font-size:40px;font-weight:700;margin-top:8px" id="live-dist">-- cm</div>
+                <div style="color:var(--muted-text);margin-top:6px">Sensor: LIDAR • Range: 0–500cm</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:12px;margin-top:12px">
+              <div style="flex:1;padding:12px;border-radius:10px;background:rgba(255,255,255,0.01)">
+                <div class="label">Gas Level</div>
+                <div style="font-size:40px;font-weight:700;margin-top:8px" id="live-gas">-- PPM</div>
+                <div style="color:var(--muted-text);margin-top:6px">Sensor: MQ-series • Thresholds configurable</div>
+              </div>
+              <div style="flex:1;padding:12px;border-radius:10px;background:rgba(255,255,255,0.01)">
+                <div class="label">Battery</div>
+                <div style="font-size:40px;font-weight:700;margin-top:8px" id="live-batt">-- %</div>
+                <div style="color:var(--muted-text);margin-top:6px">Health: Nominal • Cycles: 412</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card" style="grid-column:span 6">
+            <div class="card-title">Live Trends (last samples)</div>
+            <canvas id="liveChart2" style="height:220px;margin-top:8px"></canvas>
+          </div>
+        </div>
+        <div style="margin-top:18px" class="card">
+          <div class="card-title">Recent Readings</div>
+          <table style="width:100%;margin-top:8px;border-collapse:collapse">
+            <thead style="color:var(--muted-text);font-size:13px"><tr><th style="text-align:left;padding:8px">Time</th><th style="text-align:left;padding:8px">Temperature</th><th style="text-align:left;padding:8px">Gas</th><th style="text-align:left;padding:8px">Distance</th></tr></thead>
+            <tbody id="recentReadings" style="font-size:14px;color:var(--muted-text)"></tbody>
+          </table>
+        </div>
+      </main>
+
+      <main class="content view" id="view-control" hidden>
+        <h2>Robot Control</h2>
+        <div style="display:grid;grid-template-columns:2fr 1fr;gap:24px;margin-top:16px">
+          <div class="card">
+            <div class="card-title">Telemetrics & Live Status</div>
+            <div style="display:flex;gap:12px;margin-top:12px">
+              <div style="flex:1"><div class="label">Mode</div><div style="font-weight:700;margin-top:6px" id="tele-mode">Manual</div></div>
+              <div style="flex:1"><div class="label">Connection</div><div style="font-weight:700;margin-top:6px" id="tele-conn">Wi‑Fi (802.11ac)</div></div>
+              <div style="flex:1"><div class="label">Uptime</div><div style="font-weight:700;margin-top:6px" id="tele-uptime">03:24:12</div></div>
+            </div>
+            <div style="margin-top:12px" class="label">Command Log</div>
+            <div id="cmdLog" style="margin-top:8px;max-height:180px;overflow:auto;background:rgba(255,255,255,0.01);padding:8px;border-radius:8px;color:var(--muted-text)"><div>[12:03:12] Forward 1m</div><div>[12:03:22] Left 90°</div></div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">Controls</div>
+            <div style="display:flex;flex-direction:column;gap:12px;margin-top:12px">
+              <div style="display:flex;gap:8px">
+                <button class="small">Takeoff</button>
+                <button class="small">Return</button>
+                <button id="calibrateBtn" class="small">Calibrate</button>
+              </div>
+              <div class="label">Manual Directional Controls</div>
+              <div style="display:flex;gap:8px"><button class="small">↑</button><button class="small">↓</button><button class="small">←</button><button class="small">→</button></div>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <main class="content view" id="view-camera" hidden>
+        <h2>Camera View</h2>
+        <div class="card" style="margin-top:12px">
+          <div class="card-title">Primary Camera</div>
+          <div class="camera-placeholder" style="height:420px;margin-top:12px"><div class="camera-inner">Live feed placeholder (WebRTC / RTSP)</div></div>
+          <div style="display:flex;gap:8px;margin-top:12px"><button class="small">Snapshot</button><button class="small">Record</button><button class="small">Stream Settings</button></div>
+          <div class="card-title" style="margin-top:16px">Snapshots</div>
+          <div id="snapshotGallery" style="display:flex;gap:8px;margin-top:8px;overflow:auto"><div style="width:120px;height:70px;background:rgba(255,255,255,0.02);border-radius:6px;display:flex;align-items:center;justify-content:center;color:var(--muted-text)">No snapshots</div></div>
+        </div>
+      </main>
+
+      <main class="content view" id="view-alerts" hidden>
+        <h2>Alerts</h2>
+        <div style="display:flex;gap:12px;margin-top:12px;align-items:center"><div class="label">Filter:</div><button class="small">All</button><button class="small">Warnings</button><button class="small">Critical</button></div>
+        <div class="card" style="margin-top:12px">
+          <div class="card-title">All Alerts</div>
+          <ul id="alertsMainList" class="alerts-list" style="margin-top:8px"></ul>
+        </div>
+      </main>
+
+      <main class="content view" id="view-settings" hidden>
+        <h2>Settings</h2>
+        <div class="card" style="margin-top:12px;display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <div>
+            <div class="label">Network</div>
+            <div style="margin-top:8px">IP: 192.168.1.42 • Gateway: 192.168.1.1</div>
+            <div class="label" style="margin-top:12px">Time Sync</div>
+            <div style="margin-top:8px">NTP Server: time.example.com</div>
+          </div>
+          <div>
+            <div class="label">Calibration</div>
+            <div style="margin-top:8px">Temperature offset: +0.2°C • Proximity offset: +1cm</div>
+            <div class="label" style="margin-top:12px">Appearance</div>
+            <div style="margin-top:8px"><label><input type="checkbox" id="toggleTheme"> Reduced motion</label></div>
+          </div>
+        </div>
+      </main>
+
+    </div>
+  </div>
+
+  <script src="/app.js"></script>
+</body>
+</html>
