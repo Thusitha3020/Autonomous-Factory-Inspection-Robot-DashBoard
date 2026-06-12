@@ -1,5 +1,8 @@
 Autonomous Factory Inspection Robot — Dashboard Prototype
 
+<img width="1861" height="950" alt="Screenshot 2026-06-12 184440" src="https://github.com/user-attachments/assets/9349d4f5-7a2d-4d1d-8f3b-269851fd1258" />
+
+
 Files:
 - index.html — main prototype UI
 - styles.css — theme tokens and layout
